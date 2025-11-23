@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <title>Camera Upload</title>
+ <style>
+ body {
+ background-color: #121212;
+ color: #f5f5f5;
+ font-family: 'Segoe UI', sans-serif;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ margin: 0;
+ padding-top: 40px;
+ }
+
+ h2 {
+ color: #ffa500;
+ margin-bottom: 20px;
+ font-weight: 600;
+ }
+
+ video, canvas {
+ border: 2px solid #333;
+ border-radius: 12px;
+ margin-bottom: 15px;
+ transform: scaleX(-1);
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+ }
+
+ button {
+ padding: 10px 24px;
+ margin: 6px;
+ font-size: 16px;
+ border-radius: 8px;
+ border: none;
+ cursor: pointer;
+ font-weight: 600;
+ transition: background-color 0.3s, transform 0.2s;
+ }
+
+ button:hover {
+ transform: scale(1.05);
+ }
+
+ button:active {
+ transform: scale(0.98);
+ }
+
+ button:nth-child(1) {
+ background-color: #007bff;
+ color: white;
+ }
+
+ #retakeBtn {
+ background-color: #ffc107;
+ color: #000;
+ display: none;
+ }
+
+ #okBtn {
+ background-color: #28a745;
+ color: white;
+ display: none;
+ }
+ </style>
+</head>
+<body>
+ <h2>Upload Photo for Access</h2>
+
+ <video id="video" width="320" height="240" autoplay></video>
+ <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+ <div>
+ <button onclick="takePhoto()">Take Photo</button>
+ <button onclick="retakePhoto()" id="retakeBtn">Retake</button>
+ <button onclick="goToInventory()" id="okBtn">OK</button>
+ </div>
+
+ <script>
+ const video = document.getElementById('video');
+ const canvas = document.getElementById('canvas');
+ const context = canvas.getContext('2d');
+ const retakeBtn = document.getElementById("retakeBtn");
+ const okBtn = document.getElementById("okBtn");
+
+ navigator.mediaDevices.getUserMedia({ video: true })
+ .then((stream) => {
+ video.srcObject = stream;
+ })
+ .catch(err => {
+ alert("Camera access denied or not available.");
+ console.error(err);
+ });
+
+ function takePhoto() {
+ context.drawImage(video, 0, 0, canvas.width, canvas.height);
+ video.style.display = "none";
+ canvas.style.display = "block";
+ retakeBtn.style.display = "inline-block";
+ okBtn.style.display = "inline-block";
+ // convert to base64 and send 
+ 
+ const imageData = canvas.toDataURL('image/jpeg').split(',')[1];
+ const formData = new FormData();
+ formData.append('imageData', imageData);
+
+ fetch('/capture', { method: 'POST', body: formData })
+ .then(res => res.json())
+ .then(data => {
+ })
+ 
+ }
+
+ function retakePhoto() {
+ canvas.style.display = "none";
+ video.style.display = "block";
+ retakeBtn.style.display = "none";
+ okBtn.style.display = "none";
+ }
+
+ function goToInventory() {
+ window.location.href = "/inventory";
+ }
+ </script>
+</body>
+</html>
