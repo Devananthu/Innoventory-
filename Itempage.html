@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>Get Your Items Here</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+ <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<style>
+ body {
+ margin: 0;
+ font-family: 'Inter', sans-serif;
+ background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+ color: #fff;
+ padding: 2rem;
+ text-align: center;
+}
+
+h1 {
+ font-size: 2rem;
+ margin-bottom: 2rem;
+ color: #ff6a00;
+}
+
+#user-info {
+ margin-bottom: 20px;
+ font-size: 1rem;
+}
+
+.container {
+ margin-top: 2rem;
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: center;
+ gap: 1rem;
+}
+
+.box {
+ background: linear-gradient(135deg, #ff6a00, rgba(255, 106, 0, 0.1));
+ border-radius: 12px;
+ padding: 1rem;
+ width: 200px;
+ box-shadow: 0 0 20px 8px rgba(255, 106, 0, 0.3);
+ animation: glow 2s infinite alternate;
+ opacity: 1;
+ transform: translateY(0);
+ transition: opacity 0.4s, transform 0.4s;
+ backdrop-filter: blur(6px);
+}
+
+@keyframes glow {
+ from { box-shadow: 0 0 10px #ff6a00; }
+ to { box-shadow: 0 0 30px #ff6a00; }
+}
+
+.box.box-hide {
+ opacity: 0;
+ transform: translateY(40px) scale(0.95);
+ pointer-events: none;
+}
+
+.box.box-show {
+ opacity: 1;
+ transform: translateY(0) scale(1);
+}
+
+.quantity-controls {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-top: 1rem;
+}
+
+.glass-button {
+ background: rgba(255, 255, 255, 0.05);
+ color: white;
+ border: 1px solid #ff6a00;
+ backdrop-filter: blur(6px);
+ -webkit-backdrop-filter: blur(6px);
+ padding: 0.3rem 1rem;
+ font-size: 1.2rem;
+ border-radius: 6px;
+ cursor: pointer;
+ transition: all 0.3s ease;
+}
+
+.glass-button.clicked {
+ background-color: #ff6a00;
+ color: white;
+}
+
+.quantity {
+ font-size: 1.2rem;
+ color: #fff;
+}
+
+</style>
+
+<body>
+ <h1>GET YOUR ITEMS HERE</h1>
+ <div id="user-info">
+ <b>Name:</b> {{ username }} &nbsp; <b>UID:</b> {{ rfid }}
+ </div>
+
+ <div class="container" id="inventoryContainer"></div>
+
+ <!-- OK Button -->
+ <button id="okBtn" style="
+ margin-top: 2rem;
+ background-color: #ff6a00;
+ color: #fff;
+ border: none;
+ padding: 0.8rem 2.5rem;
+ font-size: 1.1rem;
+ border-radius: 10px;
+ cursor: pointer;
+ box-shadow: 0 2px 10px rgba(255,106,0,0.2);
+ transition: background 0.3s;
+ ">OK</button>
+ <script>
+ const BOX_NAMES = [
+ "ULN2003", "Load cell", "DC Pump", "Helical Gear motor",
+ "Cells", "Relay", "Stepper motor", "LoRa",
+ "Gear motor", "Servo motor"
+ ];
+ var socket = io();
+ let inventory = {};
+ let openBoxes = [];
+ let renderedBoxes = {};
+
+ function renderBoxes() {
+ const container = document.getElementById("inventoryContainer");
+ const openSet = new Set(openBoxes);
+
+ Object.keys(renderedBoxes).forEach(name => {
+ if (!openSet.has(name)) {
+ const boxDiv = renderedBoxes[name];
+ boxDiv.classList.remove('box-show');
+ boxDiv.classList.add('box-hide');
+ setTimeout(() => {
+ if (boxDiv.parentNode) boxDiv.parentNode.removeChild(boxDiv);
+ delete renderedBoxes[name];
+ }, 400);
+ }
+ });
+
+ openBoxes.forEach(name => {
+ let boxDiv = renderedBoxes[name];
+ const qty = inventory[name] ? inventory[name].quantity : 0;
+ if (!boxDiv) {
+ boxDiv = document.createElement('div');
+ boxDiv.className = 'box box-hide';
+ boxDiv.innerHTML = `
+ <h3>${name}</h3>
+ <div class="quantity-controls">
+ <button class="glass-button" onclick="updateQuantity('${name}', -1, event)">-</button>
+ <div class="quantity" id="qty-${name}">${qty}</div>
+ <button class="glass-button" onclick="updateQuantity('${name}', 1, event)">+</button>
+ </div>
+ `;
+ container.appendChild(boxDiv);
+ renderedBoxes[name] = boxDiv;
+ setTimeout(() => {
+ boxDiv.classList.remove('box-hide');
+ boxDiv.classList.add('box-show');
+ }, 10);
+ } else {
+ boxDiv.querySelector(`#qty-${name}`).textContent = qty;
+ }
+ });
+ }
+
+ function updateQuantity(box, change, event) {
+ const qtyDiv = document.getElementById(`qty-${box}`);
+ let qty = parseInt(qtyDiv.textContent, 10);
+ qty = Math.max(0, qty + change);
+ qtyDiv.textContent = qty;
+ socket.emit("update_quantity", { box_id: box, change: change });
+
+ if (event && event.target) {
+ event.target.classList.add("clicked");
+ setTimeout(() => event.target.classList.remove("clicked"), 200);
+ }
+ }
+
+ socket.on('update_boxes', data => {
+ openBoxes = data.open_boxes;
+ renderBoxes();
+ });
+
+ socket.on('update_inventory', data => {
+ Object.keys(data).forEach(name => {
+ if (inventory[name]) {
+ inventory[name].quantity = data[name].quantity;
+ inventory[name].total_used = data[name].total_used;
+ }
+ });
+ renderBoxes();
+ });
+
+ function loadInventory() {
+ $.get('/get_inventory', items => {
+ inventory = {};
+ items.forEach(item => { inventory[item.name] = item; });
+ renderBoxes();
+ });
+ }
+
+ loadInventory();
+
+ // OK button redirect
+ document.getElementById('okBtn').onclick = function() {
+ // Clear last RFID on server, then redirect
+ $.post('/clear_last_rfid', {}, function() {
+ window.location.href = "/";
+ });
+}
+ </script>
+</body>
+</html>
