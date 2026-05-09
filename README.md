@@ -15,12 +15,19 @@ The project integrates hardware monitoring, RFID authentication, cloud logging, 
 Features
 
 • Real-time inventory monitoring using IR sensors
+
 • RFID-based user authentication and access tracking
+
 • Voice-assisted component search using offline voice library
+
 • Live inventory status updates using WebSocket communication
+
 • Dynamic dashboard displaying active inventory boxes
+
 • Google Sheets integration for inventory and usage logs
+
 • Camera monitoring and image logging system
+
 • LED indication for component location identification
 • Real-time synchronization between hardware and web interface
 • Industrial dashboard UI for inventory management
