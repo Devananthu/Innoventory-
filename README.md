@@ -1,9 +1,9 @@
-SMART INVENTORY MANAGEMENT SYSTEM - INNOVENTORY 
+# SMART INVENTORY MANAGEMENT SYSTEM - INNOVENTORY 
 
-Industrial IoT-Based Inventory Monitoring and Component Management System
+## Industrial IoT-Based Inventory Monitoring and Component Management System
 
 
-Overview
+## **Overview**
 
 Innoventory is a smart inventory management system developed for industrial and laboratory environments to automate component tracking, inventory monitoring, and user access management.
 
@@ -12,7 +12,7 @@ The system is designed to improve inventory visibility, reduce manual monitoring
 The project integrates hardware monitoring, RFID authentication, cloud logging, voice-assisted component search, and a real-time web dashboard into a single centralized system.
 
 
-Features
+## **Features**
 
 • Real-time inventory monitoring using IR sensors
 
@@ -29,67 +29,92 @@ Features
 • Camera monitoring and image logging system
 
 • LED indication for component location identification
+
 • Real-time synchronization between hardware and web interface
+
 • Industrial dashboard UI for inventory management
 
-Technology Stack
 
-Hardware
+## **Technology Stack**
+
+## **Hardware**
+
 • Raspberry Pi
 
-
 • ESP32
+
 • RFID Reader
+
 • IR Sensors
+
 • CD74HC4067 Multiplexer
+
 • PIR Motion Sensor
+
 • INMP441 Microphone Module
+
 • LEDs
+
 • Camera Module
 
-Software
+## **Software**
+
 • Python
+
 • Flask
+
 • Flask-SocketIO
+
 • HTML
+
 • CSS
+
 • JavaScript
+
 • Google Sheets API
+
 • Google Drive API
 
-System Workflow
+## **System Workflow**
 
-RFID Authentication
+RFID / Camera Authentication 
+
 ↓
+
 User Verification
-↓
-Inventory Box Detection
-↓
-Real-Time Inventory Update
-↓
-Voice-Based Component Search
-↓
-LED Location Indication
-↓
-Cloud Log Update
-↓
-Camera Activity Monitoring
 
-Applications
+↓
+
+Voice-Based Bot Component Search
+
+↓
+
+LED Location Indication
+
+↓
+
+Inventory Box Detection
+
+↓
+
+Real-Time Inventory Update Web Interface Show Open Boxes 
+
+↓
+
+Cloud Log update Google sheet / Google Drive
+
+
+## **Applications**
 
 • Industrial Laboratories
+
 • Electronics Component Storage
+
 • Research & Development Labs
+
 • Smart Inventory Systems
+
 • Industrial Workshops
+
 • Educational Laboratories
 
-Project Highlights
-
-• Industrial IoT-based inventory monitoring system
-• Real-time hardware and web synchronization
-• RFID-secured inventory access management
-• Cloud-connected inventory logging system
-• Voice-assisted component identification
-• Centralized inventory monitoring dashboard
-• Scalable architecture for industrial environments
