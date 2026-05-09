@@ -29,6 +29,8 @@ Technology Stack
 
 Hardware
 • Raspberry Pi
+
+
 • ESP32
 • RFID Reader
 • IR Sensors
