@@ -1,9 +1,10 @@
-# SMART INVENTORY MANAGEMENT SYSTEM - INNOVENTORY 
+# Smart Inventory Management System - INNOVENTORY 
 
 ## Industrial IoT-Based Inventory Monitoring and Component Management System
 
 
 ## **Overview**
+
 
 Innoventory is a smart inventory management system developed for industrial and laboratory environments to automate component tracking, inventory monitoring, and user access management.
 
@@ -13,6 +14,7 @@ The project integrates hardware monitoring, RFID authentication, cloud logging, 
 
 
 ## **Features**
+
 
 • Real-time inventory monitoring using IR sensors
 
@@ -37,11 +39,11 @@ The project integrates hardware monitoring, RFID authentication, cloud logging, 
 
 ## **Technology Stack**
 
+
 ## **Hardware**
 
-• Raspberry Pi
 
-• ESP32
+• Raspberry Pi
 
 • RFID Reader
 
@@ -49,15 +51,15 @@ The project integrates hardware monitoring, RFID authentication, cloud logging, 
 
 • CD74HC4067 Multiplexer
 
-• PIR Motion Sensor
-
-• INMP441 Microphone Module
+• Microphone Module
 
 • LEDs
 
-• Camera Module
+• Raspberry pi Camera module 
+
 
 ## **Software**
+
 
 • Python
 
@@ -75,7 +77,9 @@ The project integrates hardware monitoring, RFID authentication, cloud logging, 
 
 • Google Drive API
 
+
 ## **System Workflow**
+
 
 RFID / Camera Authentication 
 
@@ -105,6 +109,7 @@ Cloud Log update Google sheet / Google Drive
 
 
 ## **Applications**
+
 
 • Industrial Laboratories
 
